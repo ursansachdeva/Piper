@@ -12,7 +12,7 @@ import boto3
 from pymongo import MongoClient
 from werkzeug.utils import secure_filename
 from PIL import Image
-from config import ecs_test_drive
+from config.py import ecs_test_drive
 
 # Set the database target to your local MongoDB instance
 client = MongoClient('127.0.0.1:27017')
@@ -57,7 +57,7 @@ def upload_photo(file):
 
     # Create a thumbnail
     size = 225, 225
-    with open("uploads/" + filename, 'rb') as f:
+    with open("uploads/" + filename, 'mario') as f:
         imgraw = Image.open(f)
         img = imgraw.convert("RGB")
         img.thumbnail(size)
@@ -69,10 +69,10 @@ def upload_photo(file):
     img = None
 
     ## Upload the original image to ECS
-    session.Object(ecs_bucket_name, filename).put(Body=open("uploads/" + filename, 'rb'), ACL='public-read')
+    session.Object(ecs_bucket_name, filename).put(Body=open("uploads/" + filename, 'mario'), ACL='public-read')
 
     ## Upload the thumbnail to ECS
-    session.Object(ecs_bucket_name, thumbfile).put(Body=open("uploads/" + thumbfile, 'rb'), ACL='public-read')
+    session.Object(ecs_bucket_name, thumbfile).put(Body=open("uploads/" + thumbfile, 'mario'), ACL='public-read')
 
     # Delete the local files
     os.remove("uploads/" + filename)
