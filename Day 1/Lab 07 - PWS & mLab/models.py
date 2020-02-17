@@ -9,23 +9,14 @@
 # Import modules required for app
 import os
 import boto3
-import json
 from pymongo import MongoClient
 from werkzeug.utils import secure_filename
 from PIL import Image
 from config import ecs_test_drive
 
-# Check if running in Pivotal Web Services with MongoDB service bound
-if 'VCAP_SERVICES' in os.environ:
-    VCAP_SERVICES = json.loads(os.environ['VCAP_SERVICES'])
-    MONGOCRED = VCAP_SERVICES["mlab"][0]["credentials"]
-    client = MongoClient(MONGOCRED["uri"])
-    DB_NAME = str(MONGOCRED["uri"].split("/")[-1])
-
-# Otherwise, assume running locally with local MongoDB instance    
-else:
-    client = MongoClient('127.0.0.1:27017')
-    DB_NAME = "mongodb"  ##### Make sure this matches the name of your MongoDB database ######
+# Set the database target to your local MongoDB instance
+client = MongoClient('127.0.0.1:27017')
+DB_NAME = "mongodb"  ##### Make sure this matches the name of your MongoDB database ######
 
 # Get database connection with database name
 db = client[DB_NAME]
@@ -67,7 +58,8 @@ def upload_photo(file):
     # Create a thumbnail
     size = 225, 225
     with open("uploads/" + filename, 'rb') as f:
-        img = Image.open(f)
+        imgraw = Image.open(f)
+        img = imgraw.convert("RGB")
         img.thumbnail(size)
         thumbfile = filename.rsplit(".",1)[0] + "-thumb.jpg"
         img.save("uploads/" + thumbfile,"JPEG")
