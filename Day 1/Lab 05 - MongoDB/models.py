@@ -9,7 +9,7 @@
 # Import modules required for app
 import os
 from pymongo import MongoClient
-from werkzeug import secure_filename
+from werkzeug.utils import secure_filename
 
 # Set the database target to your local MongoDB instance
 client = MongoClient('127.0.0.1:27017')
